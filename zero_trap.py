@@ -16,17 +16,7 @@ def get_fitness(a):
     return total_ones
 
 
-str_len = 50
-cnt_pop = 100
-population = [create_origin() for _ in range(cnt_pop)]
-generations = 1000
-min_mutation = 0.01
-max_mutation = 0.5
-
-iter = 0
-for _ in range(generations):
-    iter += 1
-
+def get_winners(population, cnt_pop):
     winners = []
     while len(population) >= 2:
         random.shuffle(population)
@@ -41,9 +31,10 @@ for _ in range(generations):
         population.remove(a)
         population.remove(b)
 
-    assert len(winners) == cnt_pop / 2
-    assert len(population) == 0
+    return winners
 
+
+def get_new_population(winners, cnt_pop):
     new_population = []
     winners.sort(key=get_fitness, reverse=True)
     elite = winners[0]
@@ -65,6 +56,24 @@ for _ in range(generations):
         ab = a[:point] + b[point:]
         new_population.append(ab)
 
+    return new_population
+
+
+str_len = 50
+cnt_pop = 100
+population = [create_origin() for _ in range(cnt_pop)]
+generations = 1000
+min_mutation = 0.01
+max_mutation = 0.5
+
+iter = 0
+for _ in range(generations):
+    iter += 1
+
+    winners = get_winners(population, cnt_pop)
+    assert len(winners) == cnt_pop / 2
+
+    new_population = get_new_population(winners, cnt_pop)
     assert len(new_population) == cnt_pop, len(new_population)
 
     seen = set()
